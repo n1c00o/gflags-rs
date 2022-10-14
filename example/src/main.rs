@@ -6,7 +6,6 @@ gflags_rs::int32!(int32_flag, 0, "An int32 flag.");
 gflags_rs::uint64!(uint64_flag, 0, "An uint64 flag.");
 
 fn main() {
-    for flag in gflags_rs::parse() {
-        println!("{flag:?}");
-    }
+    println!("{:?}", gflags_rs::parse("1", std::env::args().collect()));
+    println!("{:?}", std::env::args_os());
 }
