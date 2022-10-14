@@ -7,12 +7,16 @@
 // for boolean flags, a --[no]NAME variant exists and is preferred to disable
 // so --foo sets FLAGS_foo to true and --nofoo sets FLAGS_foo to false (equivalent to not setting --foo)
 
-use crate::flag::Flag;
-
 // required for macros
 pub extern crate inventory;
 
-pub mod flag;
+mod flag;
+mod parse;
+
+pub use {
+    flag::*,
+    parse::*,
+};
 
 #[macro_export]
 /// A macro that generates a commandline flag of type double, given a name, a default value and
@@ -26,7 +30,6 @@ pub mod flag;
 ///
 /// The help message should be a precise and short description of the flag. It is displayed in the
 /// help menu automatically.
-/// Also, the default value is automatically set in the help menu, so you are not required to do so.
 ///
 /// # Example
 ///
@@ -40,10 +43,10 @@ pub mod flag;
 macro_rules! string {
     ($name:ident, $default:expr, $description:expr) => {
         $crate::inventory::submit! {
-            $crate::flag::Flag::new(
+            $crate::Flag::new(
                 stringify!($name),
                 $description,
-                $crate::flag::FlagValue::String($default)
+                $crate::FlagValue::String($default)
             )
         }
     };
@@ -61,7 +64,6 @@ macro_rules! string {
 ///
 /// The help message should be a precise and short description of the flag. It is displayed in the
 /// help menu automatically.
-/// Also, the default value is automatically set in the help menu, so you are not required to do so.
 ///
 /// # Example
 ///
@@ -75,10 +77,10 @@ macro_rules! string {
 macro_rules! bool {
     ($name:ident, $default:expr, $description:expr) => {
         $crate::inventory::submit! {
-            $crate::flag::Flag::new(
+            $crate::Flag::new(
                 stringify!($name),
                 $description,
-                $crate::flag::FlagValue::Bool($default)
+                $crate::FlagValue::Bool($default)
             )
         }
     };
@@ -96,7 +98,6 @@ macro_rules! bool {
 ///
 /// The help message should be a precise and short description of the flag. It is displayed in the
 /// help menu automatically.
-/// Also, the default value is automatically set in the help menu, so you are not required to do so.
 ///
 /// # Example
 ///
@@ -110,10 +111,10 @@ macro_rules! bool {
 macro_rules! int32 {
     ($name:ident, $default:expr, $description:expr) => {
         $crate::inventory::submit! {
-            $crate::flag::Flag::new(
+            $crate::Flag::new(
                 stringify!($name),
                 $description,
-                $crate::flag::FlagValue::Int32($default)
+                $crate::FlagValue::Int32($default)
             )
         }
     };
@@ -131,7 +132,6 @@ macro_rules! int32 {
 ///
 /// The help message should be a precise and short description of the flag. It is displayed in the
 /// help menu automatically.
-/// Also, the default value is automatically set in the help menu, so you are not required to do so.
 ///
 /// # Example
 ///
@@ -145,10 +145,10 @@ macro_rules! int32 {
 macro_rules! int64 {
     ($name:ident, $default:expr, $description:expr) => {
         $crate::inventory::submit! {
-            $crate::flag::Flag::new(
+            $crate::Flag::new(
                 stringify!($name),
                 $description,
-                $crate::flag::FlagValue::Int64($default)
+                $crate::FlagValue::Int64($default)
             )
         }
     };
@@ -166,7 +166,6 @@ macro_rules! int64 {
 ///
 /// The help message should be a precise and short description of the flag. It is displayed in the
 /// help menu automatically.
-/// Also, the default value is automatically set in the help menu, so you are not required to do so.
 ///
 /// # Example
 ///
@@ -180,10 +179,10 @@ macro_rules! int64 {
 macro_rules! uint64 {
     ($name:ident, $default:expr, $description:expr) => {
         $crate::inventory::submit! {
-            $crate::flag::Flag::new(
+            $crate::Flag::new(
                 stringify!($name),
                 $description,
-                $crate::flag::FlagValue::Uint64($default)
+                $crate::FlagValue::Uint64($default)
             )
         }
     };
@@ -201,7 +200,6 @@ macro_rules! uint64 {
 ///
 /// The help message should be a precise and short description of the flag. It is displayed in the
 /// help menu automatically.
-/// Also, the default value is automatically set in the help menu, so you are not required to do so.
 ///
 /// # Example
 ///
@@ -215,16 +213,12 @@ macro_rules! uint64 {
 macro_rules! double {
     ($name:ident, $default:expr, $description:expr) => {
         $crate::inventory::submit! {
-            $crate::flag::Flag::new(
+            $crate::Flag::new(
                 stringify!($name),
                 $description,
-                $crate::flag::FlagValue::Double($default)
+                $crate::FlagValue::Double($default)
             )
         }
     };
 }
 
-/// Parses the registered commandline flags.
-pub fn parse() -> Vec<&'static Flag> {
-    inventory::iter::<Flag>.into_iter().collect()
-}

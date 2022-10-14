@@ -1,3 +1,5 @@
+use std::fmt::{Display, Formatter};
+
 #[derive(Debug, PartialOrd, PartialEq)]
 /// The possible values for a flag.
 pub enum FlagValue {
@@ -20,6 +22,19 @@ pub enum FlagValue {
     String(&'static str),
 }
 
+impl Display for FlagValue {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            FlagValue::Bool(b) => write!(f, "{b}"),
+            FlagValue::Int32(b) => write!(f, "{b}"),
+            FlagValue::Int64(b) => write!(f, "{b}"),
+            FlagValue::Uint64(b) => write!(f, "{b}"),
+            FlagValue::Double(b) => write!(f, "{b}"),
+            FlagValue::String(b) => write!(f, "{b}")
+        }
+    }
+}
+
 #[derive(Debug, PartialOrd, PartialEq)]
 /// A commandline flag.
 pub struct Flag {
@@ -32,13 +47,21 @@ pub struct Flag {
     /// The help message for the flag.
     pub description: &'static str,
 
+    /// True when the flag is a boolean flag.
+    pub boolean: bool,
     // todo: RegisterFlagValidator (a closure to verify (during parse-time) the value passed to a flag)
 }
 
 impl Flag {
     /// Creates a new flag.
     pub const fn new(name: &'static str, description: &'static str, default: FlagValue) -> Self {
-        Flag { name, default, description }
+        let boolean: bool = matches!(&default, FlagValue::Bool(_));
+
+        Flag { name, default, description, boolean, }
+    }
+
+    pub fn help(&self) -> String {
+        format!("({:?}; default: {})", self.description, self.default)
     }
 }
 
