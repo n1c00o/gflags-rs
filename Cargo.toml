@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 inventory = "0.3.2"
-getopts = "0.2.21"
+lazy_static = "1.4.0"
 
-[workspace]
-members = ["example"]
+[dev-dependencies]
+trybuild = "1.0.71"

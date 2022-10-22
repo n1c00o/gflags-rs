@@ -4,8 +4,8 @@ Rust implementation of [Google's Gflags](https://github.com/gflags/gflags).
 
 ## Introduction
 
-Gflags, formerly Google Comamandline Flags, is a useful library to implement and use
-commndline flags in a software.
+Gflags, formerly Google Commandline Flags, is a useful library to implement and use
+commandline flags in a software.
 
 Commandline flags can be used when run an executable in the command, such as `foo --bar -B baz`.
 Here, `--bar` and `-B` are two commandline flags nd `baz` is a commandline argument.
